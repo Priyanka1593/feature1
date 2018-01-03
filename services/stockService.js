@@ -1,4 +1,5 @@
 var app = require('../app.js').app;
+var fs = require('fs');
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
@@ -59,14 +60,24 @@ app.get('/updateStock/:t',(req1,res1)=>{
                     
                       stockData();    // Call stockData after updating each record.
                 }else{
-                
+                    // After completing 5 minutes fetch the records from collection
+                    // Write those records to log.txt file
+                    Stock.find({}, function(err, docs){
+		                if(err) res.json(err);
+		                    else{
+                                    fs.appendFile('log.txt', docs, function (err) {
+                                            if (err) {
+                                                console.log('Error');
+                                            } else {                                              
+                                            }
+                                    })
+                                }
+	                });
                 }
-            }
-
-             
+            }   
         
         function stockData(){
-            
+
          //   console.log(`In the StockData with counter - ${counter} `);
 
          /* If the counter is 100 we are again executing the update task by starting from firs record
